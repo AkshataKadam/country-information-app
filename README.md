@@ -19,8 +19,8 @@ Make sure you have the following installed:
 - **Node.js** (v16 or higher recommended)
 
 ## Setup & Run Locally
-git clone https://github.com/AkkshataKadam/country-information-app.git
-cd country-information-app
-npm install
-npm run dev
-http://localhost:3000
+- git clone https://github.com/AkkshataKadam/country-information-app.git
+- cd country-information-app
+- npm install
+- npm run dev
+- http://localhost:3000
