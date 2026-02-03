@@ -1,0 +1,59 @@
+name: Test and Build
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Print version of Node, Npm and Angular CLI
+        run: |
+          echo "Workflow exceuted."
+          echo "Node version should print 20.16.0"
+          node --version
+          echo "Npm version should print 10.8.1"
+          npm --version
+
+      - name: Install dependencies
+        run: npm install
+
+  version-bump:
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Extract version from package.json
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Current version is $VERSION"
+      - name: Bump version
+        run: |
+          IFS='.' read -r -a version_parts <<< "$VERSION"
+          PATCH=${version_parts[2]}
+          PATCH=$((PATCH + 1))  # Increment the patch version
+          NEW_VERSION="${version_parts[0]}.${version_parts[1]}.$PATCH"
+          echo "New version will be $NEW_VERSION"
+          
+          npm version patch --no-git-tag-version
+      - name: Commit and push version bump
+        run: |
+          git config --global user.name "AkshataKadam"
+          git config --global user.email "akshatakadam1908@gmail.com"
+          git add package.json package-lock.json
+          git commit -m "ci: bump version [skip ci]"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
