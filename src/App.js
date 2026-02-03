@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import CountryList from "./components/CountryList";
+import CountryDetail from "./components/CountryDetail";
+import SearchBar from "./components/SearchBar";
+import { getAllCountries } from "./services/countryService.js";
 
-function App() {
+const App = () => {
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    getAllCountries()
+      .then((res) => setCountries(res.data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  const filteredCountries = countries.filter((country) =>
+    country.name.common.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>🌍 Country Explorer</h1>
+      <SearchBar search={search} setSearch={setSearch} />
+
+      {selectedCountry ? (
+        <CountryDetail
+          country={selectedCountry}
+          onBack={() => setSelectedCountry(null)}
+        />
+      ) : (
+        <CountryList
+          countries={filteredCountries}
+          onSelect={setSelectedCountry}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;
