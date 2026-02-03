@@ -23,4 +23,4 @@ Make sure you have the following installed:
 - cd country-information-app
 - npm install
 - npm run dev
-- http://localhost:3000
+- http://localhost:3000 - open in browser
