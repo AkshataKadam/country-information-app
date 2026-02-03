@@ -22,5 +22,5 @@ Make sure you have the following installed:
 - git clone https://github.com/AkkshataKadam/country-information-app.git
 - cd country-information-app
 - npm install
-- npm run dev
+- npm start
 - http://localhost:3000 - open in browser
